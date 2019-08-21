@@ -19,7 +19,8 @@
                      label="Opportunities"
                      solo
                      :items="oppOptionsArray"
-                    ></v-select>
+                     @change = 'getOppData($event)'>
+                     </v-select>
                   </v-flex>
                 </div>
              </v-card> 
@@ -34,7 +35,8 @@
                    placeholder="Start typing to search"
                    prepend-icon="mdi-database-search"
                    :items="oppOptionsArray"
-                   dark>
+                   dark
+                   @change = 'getOppData($event)'>
                  </v-autocomplete> 
                </div>
              </v-card> 
@@ -44,13 +46,58 @@
 </template>
 
 <script>
+import oppsTimelineData from './oppsTimelineData'
 import oppOptions from './oppsOptions'
 export default {
     data(){
         return{
-          oppOptionsArray : oppOptions
+          oppOptionsArray : oppOptions, 
+          oppsTimelineData: null
         }
-    }, 
+    },
+    methods :{
+        getOppData(event){
+          this.oppsTimelineData = oppsTimelineData[event];
+          this.makeOppTimeline()
+        }, 
+        makeOppTimeline(){
+          var organizedStages = this.organizeStages(this.oppsTimelineData); 
+          console.log('org', organizedStages)
+        }, 
+        organizeStages(stages){
+            var organized =[];
+            var closed = null; 
+            var invoiced = null; 
+            var lost = null;
+            var stagesArray = Object.entries(stages);
+            for(var i = 0; i < stagesArray.length; i++){
+                if(stagesArray[i][0] === 'Lost'){
+                    lost = stagesArray[i];
+                }
+                else if(stagesArray[i][0] === 'Closed - Won (to be invoiced)'){
+                    closed = stagesArray[i];
+                } 
+                else if(stagesArray[i][0] === 'Invoiced'){
+                    invoiced = stagesArray[i];
+                }
+            }
+            console.log('1', stagesArray);
+            var numStages = stagesArray.filter(function(x){return x[0] !== 'Lost' && x[0] !== 'Closed - Won (to be invoiced)' && x[0] !==  'Invoiced' && x[0] !== 'Canceled' && x[0] !== 'In Progress' && x[0] !== 'Planned'});
+            console.log('2', numStages);
+            numStages.sort(function(a, b){return new Date(Number(a[1].split('/')[2]), Number(a[1].split('/')[0]), Number(a[1].split('/')[1])) -  new Date(Number(b[1].split('/')[2]), Number(b[1].split('/')[0]), Number(b[1].split('/')[1]))});
+            console.log('3', numStages);
+            if(lost){
+                numStages.push(lost);
+            } 
+            if(closed){
+                numStages.push(closed);
+            }
+            if(invoiced){
+                numStages.push(invoiced);
+            }
+            return numStages;
+        }
+    }
 }
 </script>
 
