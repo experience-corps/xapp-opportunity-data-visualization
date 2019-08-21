@@ -4,12 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack -p --watch"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@showpad/sdk": "^0.8.2"
+    "@showpad/sdk": "^0.8.2",
+    "deepmerge": "^4.0.0",
+    "fibers": "^4.0.1",
+    "sass": "^1.22.10",
+    "sass-loader": "^7.3.1"
   },
   "dependencies": {
     "@babel/core": "^7.5.5",
@@ -21,6 +26,8 @@
     "vue-loader": "^15.7.1",
     "vue-style-loader": "^4.1.2",
     "vue-template-compiler": "^2.6.10",
+    "vuetify": "^2.0.10",
+    "vuetify-loader": "^1.3.0",
     "webpack": "^4.39.2",
     "webpack-cli": "^3.3.7"
   }
