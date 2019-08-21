@@ -63,6 +63,10 @@ export default {
         makeOppTimeline(){
           var organizedStages = this.organizeStages(this.oppsTimelineData); 
           console.log('org', organizedStages)
+          var processesArray = this.createProcesses(organizedStages);
+          console.log('pro', processesArray)
+          var tasksArray =  this.createTasks(organizedStages);
+          console.log('task', tasksArray)
         }, 
         organizeStages(stages){
             var organized =[];
@@ -96,6 +100,28 @@ export default {
                 numStages.push(invoiced);
             }
             return numStages;
+        }, 
+        createProcesses(organizedStages){
+            var processesArray = [];
+            for(var i = 0; i < organizedStages.length; i++){
+                var stageName = organizedStages[i][0];
+                processesArray.push({'label' : stageName});
+            }
+            return processesArray;
+        }, 
+        createTasks(organizedStages){
+            var tasksArray = [];
+            for(var i = 0; i < organizedStages.length; i++){
+                if(i === organizedStages.length-1){
+                    var dateToday = new Date(); 
+                    var dateTodayString = '' + (dateToday.getMonth()+1) +  '/' + dateToday.getDate() +  '/' + dateToday.getFullYear();
+                    var task = {'start' : organizedStages[i][1], 'end': dateTodayString};
+                } else{
+                    var task = {'start' : organizedStages[i][1], 'end' : organizedStages[i+1][1]}
+                }
+                tasksArray.push(task);
+            }
+            return tasksArray;
         }
     }
 }
