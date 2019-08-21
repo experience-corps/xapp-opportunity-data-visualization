@@ -67,6 +67,9 @@ export default {
           console.log('pro', processesArray)
           var tasksArray =  this.createTasks(organizedStages);
           console.log('task', tasksArray)
+          var starts = this.createStartAndEnd(tasksArray)[0];
+          var ends = this.createStartAndEnd(tasksArray)[1];
+          console.log('se', starts, ends);
         }, 
         organizeStages(stages){
             var organized =[];
@@ -122,6 +125,15 @@ export default {
                 tasksArray.push(task);
             }
             return tasksArray;
+        }, 
+        createStartAndEnd(tasksArray){
+            var dataColumnStartText = []; 
+            var dataColumnEndText = [];
+            for(var i = 0; i < tasksArray.length; i++){
+                dataColumnStartText.push({'label' : tasksArray[i]['start']});
+                dataColumnEndText.push({'label' : tasksArray[i]['end']});
+            }
+            return [dataColumnStartText, dataColumnEndText]
         }
     }
 }
