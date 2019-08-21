@@ -18,6 +18,7 @@
                     <v-select
                      label="Opportunities"
                      solo
+                     :items="oppOptionsArray"
                     ></v-select>
                   </v-flex>
                 </div>
@@ -32,6 +33,7 @@
                    label="Opportunities"
                    placeholder="Start typing to search"
                    prepend-icon="mdi-database-search"
+                   :items="oppOptionsArray"
                    dark>
                  </v-autocomplete> 
                </div>
@@ -40,6 +42,17 @@
       </v-app> 
   </div>
 </template>
+
+<script>
+import oppOptions from './oppsOptions'
+export default {
+    data(){
+        return{
+          oppOptionsArray : oppOptions
+        }
+    }, 
+}
+</script>
 
 
 <style scoped>
