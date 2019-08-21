@@ -134,6 +134,21 @@ export default {
                 dataColumnEndText.push({'label' : tasksArray[i]['end']});
             }
             return [dataColumnStartText, dataColumnEndText]
+        }, 
+        createQuarters(tasksArray){
+            var firstDate = tasksArray[0]['start'];
+            var lastDate = tasksArray[tasksArray.length-1]['end'];
+            var firstDateMonth = Number(firstDate.split('/')[0]); 
+            var lastDateMonth = Number(lastDate.split('/')[0]); 
+            var firstYear = firstDate.split('/')[2];
+            var lastYear = lastDate.split('/')[2];
+            var yearDiff = Number(lastYear) - Number(firstYear);
+            if(yearDiff === 0){
+                quarterDates = [{'quarter' : `Q1 ${firstYear}` , 'date' : `1/1/${firstYear}`}, {'quarter' : `Q1 ${firstYear}`, 'date' : `3/31/${firstYear}`}, 
+                {'quarter' : `Q2 ${firstYear}` , 'date' : `4/1/${firstYear}`}, {'quarter' : `Q2 ${firstYear}` , 'date' : `6/30/${firstYear}`}, {'quarter' : `Q3 ${firstYear}`, 'date' : `7/1/${firstYear}`}, 
+                {'quarter' : `Q3 ${firstYear}`, 'date' : `9/30/${firstYear}`}, {'quarter' : `Q4 ${firstYear}` , 'date' : `10/1/${firstYear}`}, {'quarter' : `Q4 ${firstYear}`, 'date' : `12/31/${firstYear}`}]
+            }
+
         }
     }
 }
