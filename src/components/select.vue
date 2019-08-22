@@ -52,7 +52,8 @@ export default {
     data(){
         return{
           oppOptionsArray : oppOptions, 
-          oppsTimelineData: null
+          oppsTimelineData: null, 
+          oppsData : {}
         }
     },
     methods :{
@@ -76,6 +77,13 @@ export default {
           console.log('sande', startsAndEnds)
           var monthsCategory = this.makeMonths(startsAndEnds);
           console.log('m', monthsCategory);
+          this.oppsData['processes'] = processesArray; 
+          this.oppsData['tasks'] = tasksArray; 
+          this.oppsData['startsColumn'] = starts; 
+          this.oppsData['endsColumn'] = ends; 
+          this.oppsData['quarterCategory'] = quarterCategory; 
+          this.oppsData['monthCategory'] = monthsCategory; 
+          
         }, 
         organizeStages(stages){
             var organized =[];
