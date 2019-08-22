@@ -72,6 +72,8 @@ export default {
           console.log('se', starts, ends);
           var quarterCategory = this.createQuarters(tasksArray);
           console.log('qc', quarterCategory)
+          var startsAndEnds =  this.makeStartAndEndMonths(quarterCategory);
+          console.log('sande', startsAndEnds)
         }, 
         organizeStages(stages){
             var organized =[];
@@ -198,6 +200,47 @@ export default {
             var daysInMonthsAndAbrevs = { 1 : [31, 'Jan'], 2 : [28, 'Feb'], 3 : [31, 'Mar'], 4 : [30, 'Apr'], 5 : [31, 'May'], 6 : [30, 'June'], 7 : [31, 'July'], 8 : [31, 'Aug'], 9 : [30, 'Sep'], 10 : [31, 'Oct'], 11 : [30, 'Nov'], 12 : [31, 'Dec']}
             quarterCategory[quarterCategory.length-1]['end'] = `${(quarterCategory[quarterCategory.length-1]['end'].split('/')[0])}` + '/' + `${daysInMonthsAndAbrevs[Number(quarterCategory[quarterCategory.length-1]['end'].split('/')[0])][0]}` + '/' + `${(quarterCategory[quarterCategory.length-1]['end'].split('/')[2])}`;
             return quarterCategory;
+        },
+        makeStartAndEndMonths(quarterCategory){
+            var startsAndEnds = {}; 
+            var firstYear = quarterCategory[0]['start'].split('/')[2];
+            var firstMonth = quarterCategory[0]['start'].split('/')[0];
+            startsAndEnds[firstYear] = [firstMonth]; 
+            for(var i = 0; i < quarterCategory.length; i++){
+                if(i !== quarterCategory.length-1){
+                    var nextYear = quarterCategory[i+1]['start'].split('/')[2];
+                }
+                if(i === 0 ){
+                    if(!startsAndEnds[nextYear]){
+                    var currentYear =  quarterCategory[i]['start'].split('/')[2];
+                    var lastMonthOfYear = quarterCategory[i]['end'].split('/')[0];
+                    var monthsArray = startsAndEnds[currentYear];
+                    monthsArray.push(lastMonthOfYear)
+                    startsAndEnds[currentYear] = monthsArray;
+                    var newYear = quarterCategory[i+1]['start'].split('/')[2];
+                    var newMonth =  quarterCategory[i+1]['start'].split('/')[0];
+                    startsAndEnds[newYear] = [newMonth];
+                    }
+                }
+                else if (i === quarterCategory.length-1){
+                    var currentYear = quarterCategory[i]['start'].split('/')[2];
+                    var lastMonthOfCurrentYear = quarterCategory[i]['end'].split('/')[0];
+                    var monthsArray = startsAndEnds[currentYear];
+                    monthsArray.push(lastMonthOfCurrentYear);
+                    startsAndEnds[currentYear] = monthsArray;
+                }
+                else if(!startsAndEnds[nextYear]){
+                    var currentYear = quarterCategory[i]['start'].split('/')[2];
+                    var lastMonthOfCurrentYear = quarterCategory[i]['end'].split('/')[0];
+                    var monthsArray = startsAndEnds[currentYear];
+                    monthsArray.push(lastMonthOfCurrentYear);
+                    startsAndEnds[currentYear] = monthsArray;
+                    var newYear = quarterCategory[i+1]['start'].split('/')[2];
+                    var newMonth = quarterCategory[i+1]['start'].split('/')[0];
+                    startsAndEnds[newYear] = [newMonth];   
+                }  
+            }   
+            return startsAndEnds;
         }
     }    
 }
