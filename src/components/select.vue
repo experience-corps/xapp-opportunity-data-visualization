@@ -53,13 +53,16 @@ export default {
         return{
           oppOptionsArray : oppOptions, 
           oppsTimelineData: null, 
-          oppsData : {}
+          oppsData : {}, 
+          oppName : null 
         }
     },
     methods :{
         getOppData(event){
+          this.oppName = event;
           this.oppsTimelineData = oppsTimelineData[event];
           this.makeOppTimeline()
+          this.$router.push({name : 'Data', params : {opp : this.oppsData, oppName : this.oppName}});
         }, 
         makeOppTimeline(){
           var organizedStages = this.organizeStages(this.oppsTimelineData); 
