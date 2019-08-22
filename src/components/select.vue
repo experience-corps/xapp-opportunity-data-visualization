@@ -74,6 +74,8 @@ export default {
           console.log('qc', quarterCategory)
           var startsAndEnds =  this.makeStartAndEndMonths(quarterCategory);
           console.log('sande', startsAndEnds)
+          var monthsCategory = this.makeMonths(startsAndEnds);
+          console.log('m', monthsCategory);
         }, 
         organizeStages(stages){
             var organized =[];
@@ -241,6 +243,22 @@ export default {
                 }  
             }   
             return startsAndEnds;
+        }, 
+        makeMonths(startsAndEnds){
+            var monthCategory = []; 
+            var years = Object.keys(startsAndEnds); 
+            years.sort(function(a,b){return Number(a)-Number(b)});
+            var daysInMonthsAndAbrevs = { 1 : [31, 'Jan'], 2 : [28, 'Feb'], 3 : [31, 'Mar'], 4 : [30, 'Apr'], 5 : [31, 'May'], 6 : [30, 'June'], 7 : [31, 'July'], 8 : [31, 'Aug'], 9 : [30, 'Sep'], 10 : [31, 'Oct'], 11 : [30, 'Nov'], 12 : [31, 'Dec']};
+            var months = []; 
+            for(var i = 0; i < years.length; i++){
+                for(var j = Number(startsAndEnds[years[i]][0]); j < Number(startsAndEnds[years[i]][1]); j++){
+                    var yearsAbrev = years[i].slice(-2); 
+                    var numOfDays = daysInMonthsAndAbrevs[j][0];
+                    var monthText = daysInMonthsAndAbrevs[j][1];
+                    monthCategory.push({'start' : `${j}` + '/' + '1' + '/' + `${yearsAbrev}`, 'end' : `${j}` + '/' + numOfDays + '/' + `${yearsAbrev}`, 'label' :   `${monthText} ${yearsAbrev}`});
+                }
+            }
+            return monthCategory;
         }
     }    
 }
