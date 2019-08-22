@@ -47,21 +47,27 @@
 
 <script>
 import oppsTimelineData from './oppsTimelineData'
+import oppsAssetData from './oppsAssetData'
 import oppOptions from './oppsOptions'
 export default {
     data(){
         return{
           oppOptionsArray : oppOptions, 
           oppsTimelineData: null, 
+          oppsAssetData: null,
           oppsData : {}, 
-          oppName : null 
+          oppName : null, 
+          datesXCoordinates : {}
         }
     },
     methods :{
         getOppData(event){
           this.oppName = event;
           this.oppsTimelineData = oppsTimelineData[event];
-          this.makeOppTimeline()
+          this.oppsAssetData = oppsAssetData[event]; 
+          console.log('assets', this.oppsAssetData)
+          this.makeOppTimeline(); 
+          this.makeOppGraph();
           this.$router.push({name : 'Data', params : {opp : this.oppsData, oppName : this.oppName}});
         }, 
         makeOppTimeline(){
@@ -270,6 +276,27 @@ export default {
                 }
             }
             return monthCategory;
+        }, 
+        makeOppGraph(){
+            var xAxis = this.makeXAxis(this.oppsAssetData)
+            console.log('xAxis', xAxis);
+        }, 
+        makeXAxis(assetsData){
+            var dates = Object.keys(assetsData).filter(function(x){return x != 'No date'});
+            var xAxis = [];
+            dates.sort(function(a,b){return new Date(Number(a.split('/')[2]), Number(a.split('/')[0]), Number(a.split('/')[1])) - new Date(Number(b.split('/')[2]), Number(b.split('/')[0]), Number(b.split('/')[1]))});
+            var interval = 100/dates.length;
+            for(var i = 0; i < dates.length; i++){
+                var xCoordinate = i * interval; 
+                this.datesXCoordinates[dates[i]] = xCoordinate;
+            }
+            for(var j = 0; j <= 100; j+= interval){
+                xAxis.push({'x' : j});
+            }
+            for(var z = 0; z <= dates.length; z++){
+                xAxis[z]['label'] = dates[z];
+            }
+            return xAxis;
         }
     }    
 }
