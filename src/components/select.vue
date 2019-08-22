@@ -70,6 +70,8 @@ export default {
           var starts = this.createStartAndEnd(tasksArray)[0];
           var ends = this.createStartAndEnd(tasksArray)[1];
           console.log('se', starts, ends);
+          var quarterCategory = this.createQuarters(tasksArray);
+          console.log('qc', quarterCategory)
         }, 
         organizeStages(stages){
             var organized =[];
@@ -147,10 +149,57 @@ export default {
                 quarterDates = [{'quarter' : `Q1 ${firstYear}` , 'date' : `1/1/${firstYear}`}, {'quarter' : `Q1 ${firstYear}`, 'date' : `3/31/${firstYear}`}, 
                 {'quarter' : `Q2 ${firstYear}` , 'date' : `4/1/${firstYear}`}, {'quarter' : `Q2 ${firstYear}` , 'date' : `6/30/${firstYear}`}, {'quarter' : `Q3 ${firstYear}`, 'date' : `7/1/${firstYear}`}, 
                 {'quarter' : `Q3 ${firstYear}`, 'date' : `9/30/${firstYear}`}, {'quarter' : `Q4 ${firstYear}` , 'date' : `10/1/${firstYear}`}, {'quarter' : `Q4 ${firstYear}`, 'date' : `12/31/${firstYear}`}]
+            } else{
+                var quarterDates = [];
+                for(var i = 0; i <= yearDiff; i++){
+                    var yearNow = Number(firstYear) + i;
+                    var yearNowString = yearNow.toString();
+                    quarterDates.push({'quarter' : `Q1 ${yearNowString}`, 'date' : `1/1/${yearNowString}`}, {'quarter' : `Q1 ${yearNowString}` , 'date' : `3/31/${yearNowString}`}, 
+                    {'quarter' : `Q2 ${yearNowString}`, 'date' : `4/1/${yearNowString}`}, {'quarter' : `Q2 ${yearNowString}`, 'date' : `6/30/${yearNowString}`}, {'quarter' : `Q3 ${yearNowString}`, 'date' : `7/1/${yearNowString}`}, 
+                    {'quarter' : `Q3 ${yearNowString}`, 'date' : `9/30/${yearNowString}`}, {'quarter' : `Q4 ${yearNowString}`, 'date' : `10/1/${yearNowString}`}, {'quarter' : `Q4 ${yearNowString}`, 'date' : `12/31/${yearNowString}`})
+                }
             }
-
+            if (firstDateMonth >= 1 && firstDateMonth < 4){
+              quarterDates.push({'quarter' : `Q1 ${firstYear}`, 'date' : `${firstDate}`})
+            }
+            else if (firstDateMonth >= 4 && firstDateMonth < 7){
+                quarterDates.push({'quarter' : `Q2 ${firstYear}`, 'date' : `${firstDate}`})
+            }
+            else if (firstDateMonth >= 7 && firstDateMonth < 10){
+                quarterDates.push({'quarter' : `Q3 ${firstYear}`, 'date' : `${firstDate}`})
+            }
+            else if (firstDateMonth >= 10){
+                quarterDates.push({'quarter' : `Q4 ${firstYear}`, 'date' : `${firstDate}`})
+            }
+            if (lastDateMonth >= 1 && lastDateMonth < 4){
+                quarterDates.push({'quarter' : `Q1 ${lastYear}`, 'date' : `${lastDate}`})
+            }
+            else if (lastDateMonth >= 4 && lastDateMonth < 7){
+                quarterDates.push({'quarter' : `Q2 ${lastYear}`, 'date' : `${lastDate}`})
+            }
+            else if (lastDateMonth >= 7 && lastDateMonth < 10){
+                quarterDates.push({'quarter' : `Q3 ${lastYear}`, 'date' : `${lastDate}`})
+            }
+            else if (lastDateMonth >= 10){
+                quarterDates.push({'quarter' : `Q4 ${lastYear}`, 'date' : `${lastDate}`})
+            }
+            quarterDates.sort(function(a,b){return new Date(Number(a['date'].split('/')[2]), Number(a['date'].split('/')[0]), Number(a['date'].split('/')[1])) - 
+            new Date(Number(b['date'].split('/')[2]), Number(b['date'].split('/')[0]), Number(b['date'].split('/')[1]))});
+            console.log('q', quarterDates)
+            var indexOfFirstDate = quarterDates.map(function(x){return x.date}).indexOf(firstDate);
+            var indexOfLastDate = quarterDates.map(function(x){return x.date}).indexOf(lastDate);
+            var neededQuarterDates = quarterDates.slice(indexOfFirstDate, indexOfLastDate+1);
+            var quarterCategory = [];
+            console.log('needed', neededQuarterDates)
+            for(var i = 0; i < neededQuarterDates.length; i+=2){
+                quarterCategory.push({'start': neededQuarterDates[i]['date'], 'end': neededQuarterDates[i+1]['date'], 'label': neededQuarterDates[i]['quarter']});
+            }
+            quarterCategory[0]['start'] = `${quarterCategory[0]['start'].split('/')[0]}` + '/' + '1' + '/' + `${quarterCategory[0]['start'].split('/')[2]}`
+            var daysInMonthsAndAbrevs = { 1 : [31, 'Jan'], 2 : [28, 'Feb'], 3 : [31, 'Mar'], 4 : [30, 'Apr'], 5 : [31, 'May'], 6 : [30, 'June'], 7 : [31, 'July'], 8 : [31, 'Aug'], 9 : [30, 'Sep'], 10 : [31, 'Oct'], 11 : [30, 'Nov'], 12 : [31, 'Dec']}
+            quarterCategory[quarterCategory.length-1]['end'] = `${(quarterCategory[quarterCategory.length-1]['end'].split('/')[0])}` + '/' + `${daysInMonthsAndAbrevs[Number(quarterCategory[quarterCategory.length-1]['end'].split('/')[0])][0]}` + '/' + `${(quarterCategory[quarterCategory.length-1]['end'].split('/')[2])}`;
+            return quarterCategory;
         }
-    }
+    }    
 }
 </script>
 
