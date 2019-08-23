@@ -32,6 +32,18 @@
               No timeline data available.
              </v-card-text>
            </v-card>   -->
+           <v-toolbar
+             color = "#512DA8"
+             max-height = "75px">
+               <h3 class = "timelineTitle"> Assets Data</h3>
+           </v-toolbar>  
+            <fusioncharts
+             :type="type2"
+             :width="width2"
+             :height="height2"
+             :dataFormat="dataFormat2"
+             :dataSource="dataSource2">
+           </fusioncharts>
          </div>
       </v-app>
     </div>
@@ -39,7 +51,7 @@
 
 <script>
 export default {
-    props : ['opp', 'oppName'], 
+    props : ['opp', 'oppName', 'oppAssetData'], 
     data(){
         return{
             "type" : 'gantt',
@@ -88,17 +100,35 @@ export default {
                     "headerBgColor": "#036ffc", 
                     "headerFontColor": "#ffffff"
                 } 
-            }
+            }, 
+             "type2" : 'bubble',
+             "width2" : "100%", 
+             "height2" : "600", 
+             "dataFormat2" : 'json',
+             "dataSource2" : {
+                 "chart": {
+                  "showValues": "1",
+                  "xaxisname" : "Dates Viewed",
+                  "yaxisname" : "Number of assets", 
+                  "plotTooltext": "$name viewed for $zvalue", 
+                  "theme": "fusion"
+                 }, 
+                 "categories":[],
+                 "dataset":[]           
+             },
         }
     }, 
     mounted(){
         var dataObject = this.opp;
+        var assetData = this.oppAssetData;
         this.dataSource['processes']['process'] = dataObject['processes']
         this.dataSource['tasks']['task'] = dataObject['tasks'];
         this.dataSource['categories'].push({"fontColor": "#ffffff", "bgColor": "#036ffc", 'category' : dataObject['quarterCategory']});
         this.dataSource['categories'].push({"fontColor": "#ffffff", "bgColor": "#036ffc",'category' : dataObject['monthCategory']});
         this.dataSource['datatable']['datacolumn'] = [{"headerFontColor": "#ffffff", "fontColor": "#ffffff", "headerBgColor": "#036ffc", "headertext": "Start Date", 'text' : dataObject['startsColumn'], "isBold": "1"}, 
            {"headertext": "End Date", 'text' : dataObject['endsColumn'], "isBold": "1"}]; 
+        this.dataSource2['categories'].push({"category" : assetData['xAxis']});
+        this.dataSource2['dataset'].push({"data" : assetData['dataSet']});
     }, 
     methods : {
         returnToSelections(){
