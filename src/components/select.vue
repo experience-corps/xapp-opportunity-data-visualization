@@ -66,6 +66,7 @@ export default {
           this.oppsTimelineData = oppsTimelineData[event];
           this.oppsAssetData = oppsAssetData[event]; 
           console.log('assets', this.oppsAssetData)
+
           this.makeOppTimeline(); 
           this.makeOppGraph();
           this.$router.push({name : 'Data', params : {opp : this.oppsData, oppName : this.oppName}});
@@ -280,6 +281,8 @@ export default {
         makeOppGraph(){
             var xAxis = this.makeXAxis(this.oppsAssetData)
             console.log('xAxis', xAxis);
+            var dataSet = this.makeDataset(this.oppsAssetData);
+            console.log('data', dataSet);
         }, 
         makeXAxis(assetsData){
             var dates = Object.keys(assetsData).filter(function(x){return x != 'No date'});
@@ -290,13 +293,57 @@ export default {
                 var xCoordinate = i * interval; 
                 this.datesXCoordinates[dates[i]] = xCoordinate;
             }
-            for(var j = 0; j <= 100; j+= interval){
+            for(var j = 0; j < 100; j+= interval){
                 xAxis.push({'x' : j});
             }
-            for(var z = 0; z <= dates.length; z++){
+            for(var z = 0; z < dates.length; z++){
                 xAxis[z]['label'] = dates[z];
             }
             return xAxis;
+        },
+        makeDataset(assetsData){
+            var dataSet = [];
+            for(var date in assetsData){
+                console.log('date', date)
+                var count = 1;
+                if(date !== 'No date'){
+                    for(var asset in assetsData[date]){
+                        console.log('a', asset)
+                        var assetParts = asset.split('.');
+                        var assetType = assetParts[assetParts.length-1];
+                        if (assetType == 'pdf'){ 
+                            var color = '#4153af'
+                        }
+                        else if (assetType == 'pptx'){
+                            var color = '#8a34a4'
+                        }
+                        else if (assetType == 'mp4'){ 
+                            var color = '#e98f35'
+                        }
+                        else if (assetType == 'mov'){
+                            var color = '#307064'
+                        }
+                        else if (assetType == 'zip'){
+                            var color = '#EF5350'
+                        }
+                        else if (assetType == 'xlsx'){
+                            var color = '#1E88E5'
+                        }
+                        else if (assetType == 'png'){
+                            var color = '#26C6DA'
+                        }
+                        else if (assetType == 'docx'){
+                            var color = '#C0CA33'
+                        }
+                        else{ 
+                            var color = '#43A047'
+                        }
+                        dataSet.push({'x' : this.datesXCoordinates[date], 'y' : count, 'z': assetsData[date][asset], 'name': asset, 'color' : color})
+                        count += 1
+                    }
+                }        
+            }
+          return dataSet;
         }
     }    
 }
