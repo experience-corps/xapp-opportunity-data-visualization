@@ -23,15 +23,15 @@
              :height="height"
              :dataFormat="dataFormat"
              :dataSource="dataSource"
-            >
+             v-if = 'hasTimelineData'>
            </fusioncharts>
-           <!-- <v-card
+           <v-card
             height= "300"
-            v-if = '!timelineData'> 
+            v-if = '!hasTimelineData'> 
              <v-card-text>
               No timeline data available.
              </v-card-text>
-           </v-card>   -->
+           </v-card>  
            <v-toolbar
              color = "#512DA8"
              max-height = "75px">
@@ -42,8 +42,16 @@
              :width="width2"
              :height="height2"
              :dataFormat="dataFormat2"
-             :dataSource="dataSource2">
+             :dataSource="dataSource2"
+             v-if = 'hasAssetData'>
            </fusioncharts>
+           <v-card
+            height= "300"
+            v-if = '!hasAssetData'> 
+             <v-card-text>
+              No asset data available.
+             </v-card-text>
+           </v-card>
          </div>
       </v-app>
     </div>
@@ -116,11 +124,20 @@ export default {
                  "categories":[],
                  "dataset":[]           
              },
+             hasAssetData : true, 
+             hasTimelineData : true
         }
     }, 
     mounted(){
         var dataObject = this.opp;
+        if((dataObject['processes']).length === 0){
+            this.hasTimelineData = false;
+        }
         var assetData = this.oppAssetData;
+        if((assetData['dataSet']).length === 0){
+            this.hasAssetData = false
+        }
+        console.log('HERE', assetData);
         this.dataSource['processes']['process'] = dataObject['processes']
         this.dataSource['tasks']['task'] = dataObject['tasks'];
         this.dataSource['categories'].push({"fontColor": "#ffffff", "bgColor": "#036ffc", 'category' : dataObject['quarterCategory']});
